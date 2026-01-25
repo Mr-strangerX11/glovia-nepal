@@ -2,11 +2,5 @@
   "buildCommand": "cd frontend && npm run build",
   "installCommand": "npm install && cd backend && npm install && cd ../frontend && npm install",
   "outputDirectory": "frontend/.next",
-  "framework": "nextjs",
-  "env": {
-    "NEXT_PUBLIC_API_URL": {
-      "description": "Backend API URL"
-    }
-  },
-  "regions": ["pdx1"]
+  "framework": "nextjs"
 }
