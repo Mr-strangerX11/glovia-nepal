@@ -3,14 +3,10 @@
   "installCommand": "npm install && cd backend && npm install && cd ../frontend && npm install",
   "outputDirectory": "frontend/.next",
   "framework": "nextjs",
-  "env": [
-    "NEXT_PUBLIC_API_URL"
-  ],
-  "regions": ["pdx1"],
-  "functions": {
-    "api/**": {
-      "memory": 1024,
-      "maxDuration": 60
+  "env": {
+    "NEXT_PUBLIC_API_URL": {
+      "description": "Backend API URL"
     }
-  }
+  },
+  "regions": ["pdx1"]
 }
