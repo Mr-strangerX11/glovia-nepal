@@ -1,0 +1,68 @@
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+import * as compression from 'compression';
+import helmet from 'helmet';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
+  // Security
+  app.use(helmet());
+  app.enableCors({
+    origin: configService.get('FRONTEND_URL') || 'http://localhost:3000',
+    credentials: true,
+  });
+
+  // Compression
+  app.use(compression());
+
+  // Validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+
+  // API Prefix
+  const apiPrefix = configService.get('API_PREFIX') || 'api/v1';
+  app.setGlobalPrefix(apiPrefix);
+
+  // Swagger Documentation
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Glovia Nepal API')
+      .setDescription('E-Commerce Platform API Documentation')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('Auth', 'Authentication endpoints')
+      .addTag('Users', 'User management')
+      .addTag('Products', 'Product catalog')
+      .addTag('Categories', 'Product categories')
+      .addTag('Orders', 'Order management')
+      .addTag('Payments', 'Payment processing')
+      .addTag('Admin', 'Admin operations')
+      .build();
+    
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+  }
+
+  const port = configService.get('PORT') || 3001;
+  await app.listen(port);
+  
+  console.log(`🚀 Glovia Nepal API is running on: http://localhost:${port}/${apiPrefix}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
+  }
+}
+
+bootstrap();
