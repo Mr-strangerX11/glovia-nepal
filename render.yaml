@@ -1,0 +1,56 @@
+services:
+  # Backend API Service
+  - type: web
+    name: glovia-nepal-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install && npm run build && npx prisma generate
+    startCommand: cd backend && npx prisma migrate deploy && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        fromDatabase:
+          name: glovia-nepal-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        sync: false
+      - key: EMAIL_PROVIDER
+        value: mock
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SENDGRID_FROM_EMAIL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: ESEWA_MERCHANT_CODE
+        sync: false
+      - key: ESEWA_SECRET_KEY
+        sync: false
+      - key: KHALTI_SECRET_KEY
+        sync: false
+      - key: KHALTI_PUBLIC_KEY
+        sync: false
+    healthCheckPath: /api/v1/health
+
+  # PostgreSQL Database
+databases:
+  - name: glovia-nepal-db
+    databaseName: glovia_nepal
+    plan: free
+    region: oregon
