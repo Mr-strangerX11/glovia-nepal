@@ -57,9 +57,9 @@ async function bootstrap() {
   }
 
   const port = configService.get('PORT') || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   
-  console.log(`🚀 Glovia Nepal API is running on: http://localhost:${port}/${apiPrefix}`);
+  console.log(`🚀 Glovia Nepal API is running on: http://0.0.0.0:${port}/${apiPrefix}`);
   if (process.env.NODE_ENV !== 'production') {
     console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
   }
