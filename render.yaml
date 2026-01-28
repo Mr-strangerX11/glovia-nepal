@@ -5,8 +5,9 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd backend && npm install && npm run build && npx prisma generate
-    startCommand: cd backend && npx prisma migrate deploy && npm run start:prod
+    rootDir: backend
+    buildCommand: npm install && npm run build && npx prisma generate
+    startCommand: npx prisma migrate deploy && npm run start:prod
     envVars:
       - key: NODE_ENV
         value: production
