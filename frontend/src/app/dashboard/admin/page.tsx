@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
-import { useAdminDashboard } from "@/hooks/useData";
+import { useAdminDashboard, useAdminBrandAnalytics } from "@/hooks/useData";
 
 export default function AdminDashboardPage() {
   const { user, isChecking } = useAuthGuard({ roles: ["ADMIN", "SUPER_ADMIN"] });
   const { dashboard, isLoading } = useAdminDashboard();
+  const { analytics: brandAnalytics, isLoading: brandLoading } = useAdminBrandAnalytics();
 
   if (isChecking || !user) {
     return (
@@ -73,6 +74,54 @@ export default function AdminDashboardPage() {
               </div>
             )}
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Brand Analytics</h3>
+              <Link href="/admin/brands" className="text-primary-600 text-sm font-semibold">
+                Manage brands
+              </Link>
+            </div>
+            {brandLoading && <p className="text-sm text-gray-600">Loading brand data...</p>}
+            {!brandLoading && brandAnalytics && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-primary-50 rounded p-3">
+                    <p className="text-xs text-gray-600">Total Brands</p>
+                    <p className="text-2xl font-bold text-primary-600">{brandAnalytics.totalBrands || 0}</p>
+                  </div>
+                  <div className="bg-green-50 rounded p-3">
+                    <p className="text-xs text-gray-600">Active Brands</p>
+                    <p className="text-2xl font-bold text-green-600">{brandAnalytics.activeBrands || 0}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold mb-3">Top Brands by Revenue</p>
+                  <div className="space-y-2">
+                    {brandAnalytics.brandPerformance?.length > 0 ? (
+                      brandAnalytics.brandPerformance.slice(0, 5).map((brand: any, idx: number) => (
+                        <div key={brand.id} className="flex items-center justify-between py-2 border-b">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-primary-100 text-primary-700 text-xs font-bold flex items-center justify-center">
+                              {idx + 1}
+                            </span>
+                            <span className="text-sm font-medium">{brand.name}</span>
+                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">{brand.productCount} products</span>
+                          </div>
+                          <span className="text-sm font-semibold text-primary-600">NPR {brand.revenue?.toLocaleString()}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-600">No brand data available</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="card p-6">
             <div className="flex items-center justify-between mb-4">
@@ -107,6 +156,10 @@ export default function AdminDashboardPage() {
           <Link href="/admin/products" className="card p-6 hover:shadow-lg transition-shadow">
             <h3 className="text-lg font-semibold">Products</h3>
             <p className="text-sm text-gray-600">Create, edit, and manage catalog items.</p>
+          </Link>
+          <Link href="/admin/brands" className="card p-6 hover:shadow-lg transition-shadow">
+            <h3 className="text-lg font-semibold">Brands</h3>
+            <p className="text-sm text-gray-600">Manage brands and their products.</p>
           </Link>
           <Link href="/admin/orders" className="card p-6 hover:shadow-lg transition-shadow">
             <h3 className="text-lg font-semibold">Orders</h3>

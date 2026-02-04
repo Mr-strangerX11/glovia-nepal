@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61584687494150"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/10 hover:bg-primary-600 rounded-full flex items-center justify-center transition-colors"
@@ -27,7 +27,7 @@ export default function Footer() {
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/glovia_nepal/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/10 hover:bg-primary-600 rounded-full flex items-center justify-center transition-colors"
@@ -122,7 +122,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
             <p>© {currentYear} Glovia Nepal. All rights reserved.</p>
             <div className="flex gap-4">
-              <span>Made for Nepal 🇳🇵</span>
+              <span>Made for Nepal🇳🇵</span>
               <span>Mr kashi chaudhary</span>
               <span>With Love ❤️</span>
             </div>

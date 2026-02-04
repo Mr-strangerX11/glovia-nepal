@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useMemo, Suspense } from "react";
-import { useProducts, useCategories } from "@/hooks/useData";
+import { useProducts, useCategories, useBrands } from "@/hooks/useData";
 import Image from "next/image";
 
 function ProductsContent() {
@@ -11,16 +11,19 @@ function ProductsContent() {
   const router = useRouter();
 
   const category = searchParams.get("category") || undefined;
+  const brand = searchParams.get("brand") || undefined;
   const search = searchParams.get("search") || searchParams.get("q") || undefined;
 
-  const { products, isLoading } = useProducts({ category, search });
+  const { products, isLoading } = useProducts({ category, brand, search });
   const { categories } = useCategories();
+  const { brands } = useBrands();
 
   const title = useMemo(() => {
     if (category) return `Products - ${category}`;
+    if (brand) return `Products - ${brand}`;
     if (search) return `Search: ${search}`;
     return "All Products";
-  }, [category, search]);
+  }, [category, brand, search]);
 
   const handleSearch = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -48,7 +51,7 @@ function ProductsContent() {
               className="input w-64"
             />
             <div className="flex flex-wrap gap-2">
-              <Link href="/products" className={`chip ${!category ? "chip-active" : ""}`}>
+              <Link href="/products" className={`chip ${!category && !brand ? "chip-active" : ""}`}>
                 All
               </Link>
               {categories?.map((cat) => (
@@ -58,6 +61,17 @@ function ProductsContent() {
                   className={`chip ${category === cat.slug ? "chip-active" : ""}`}
                 >
                   {cat.name}
+                </Link>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {brands?.map((b) => (
+                <Link
+                  key={b.slug}
+                  href={`/products?brand=${b.slug}`}
+                  className={`chip ${brand === b.slug ? "chip-active" : ""}`}
+                >
+                  {b.name}
                 </Link>
               ))}
             </div>
